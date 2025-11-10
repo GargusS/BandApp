@@ -1,12 +1,55 @@
-@model IEnumerable<BandApp.Models.BandMember>
+@model List<BandApp.Models.BandMember>
+@{
+  ViewData["Title"] = "Bandmedlemmer";
+}
 
-<div class="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-  @foreach (var member in Model)
-  {
-    <div class="bg-gray-800 p-4 rounded-lg text-center">
-      <img src="@member.ImageUrl" alt="@member.Name" class="w-40 h-32 mx-auto rounded-full mb-3">
-      <h2 class="text-white text-xl font-semibold">@member.Name</h2>
-      <p class="text-gray-400">@member.Role</p>
-    </div>
-  }
-</div>
+<section class="text-center py-16 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
+  <h1 class="text-5xl font-extrabold mb-6 tracking-tight">Bandmedlemmer</h1>
+  <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
+    Her finner du en oversikt over alle medlemmer i bandet, samt mulighet for å redigere og legge til nye.
+  </p>
+  <a href="/BandMembers/Create"
+    class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-semibold transition-colors">
+    ➕ Legg til nytt medlem
+  </a>
+</section>
+
+<section class="py-16 bg-gray-100 text-gray-800">
+  <div class="max-w-5xl mx-auto px-6">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-indigo-600 text-white">
+          <th class="p-3 rounded-tl-lg">Navn</th>
+          <th class="p-3">Instrument</th>
+          <th class="p-3">Rolle</th>
+          <th class="p-3 text-center">Handlinger</th>
+        </tr>
+      </thead>
+      <tbody>
+        @* Eksempeldata / Model-loop *@
+        @if (Model != null && Model.Any())
+        {
+          foreach (var member in Model)
+          {
+            <tr class="border-b hover:bg-gray-50 transition">
+              <td class="p-3">@member.Name</td>
+              <td class="p-3">@member.Instrument</td>
+              <td class="p-3">@member.Role</td>
+              <td class="p-3 text-center">
+                <a href="/BandMembers/Edit/@member.Id" class="text-indigo-600 hover:underline">Rediger</a> |
+                <a href="/BandMembers/Details/@member.Id" class="text-gray-700 hover:underline">Vis</a> |
+                <a href="/BandMembers/Delete/@member.Id" class="text-red-500 hover:underline">Slett</a>
+              </td>
+            </tr>
+          }
+        }
+        else
+        {
+          <tr>
+            <td colspan="4" class="p-6 text-center text-gray-500">Ingen medlemmer registrert ennå.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
