@@ -1,0 +1,12 @@
+@model IEnumerable<BandApp.Models.BandMember>
+
+<div class="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  @foreach (var member in Model)
+  {
+    <div class="bg-gray-800 p-4 rounded-lg text-center">
+      <img src="@member.ImageUrl" alt="@member.Name" class="w-40 h-32 mx-auto rounded-full mb-3">
+      <h2 class="text-white text-xl font-semibold">@member.Name</h2>
+      <p class="text-gray-400">@member.Role</p>
+    </div>
+  }
+</div>

@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@source "./**/*.{cshtml,cs}";
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-main: hsl(0 0% 100%);
+  --color-main-foreground: hsl(240 10% 3.9%);
+  --color-primary: hsl(220 75% 50%);
+  --color-primary-accent: hsl(220 75% 55%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: hsl(240 4.8% 95.9%);
+  --color-secondary-foreground: hsl(240 5.9% 10%);
+  --color-accent: hsl(240 4.8% 95.9%);
+  --color-accent-foreground: hsl(240 5.9% 40%);
+  --color-error: hsl(0 84.2% 60.2%);
+  --color-error-foreground: hsl(0 0% 100%);
+  --color-control: hsl(240 5.9% 90%);
+  --color-input: hsl(240 4.9% 84%);
+  --color-ring: hsl(240 5% 65%);
+}
