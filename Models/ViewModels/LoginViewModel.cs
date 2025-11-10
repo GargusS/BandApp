@@ -1,6 +1,13 @@
-public class LoginViewModel
+using System.ComponentModel.DataAnnotations;
+
+namespace BandApp.ViewModels
 {
-  public string Email { get; set; } = "";
-  public string Password { get; set; } = "";
-  public bool RememberMe { get; set; }
+  public class LoginViewModel
+  {
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required, DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+  }
 }
