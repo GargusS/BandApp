@@ -37,7 +37,7 @@ namespace BandApp.Controllers
       if (result.Succeeded)
       {
         await _signInManager.SignInAsync(user, isPersistent: false);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Member");
       }
 
       foreach (var error in result.Errors)
@@ -57,11 +57,14 @@ namespace BandApp.Controllers
       var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
       if (result.Succeeded)
-        return RedirectToAction("Index", "Home");
+      {
+        return RedirectToAction("Index", "Member");
+      }
 
       ModelState.AddModelError("", "Ugyldig innloggingsforsøk.");
       return View(model);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> Logout()

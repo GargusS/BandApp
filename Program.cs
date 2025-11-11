@@ -25,6 +25,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Register";
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
