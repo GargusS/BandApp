@@ -11,7 +11,7 @@ namespace BandApp.Controllers
   {
     private readonly UserManager<ApplicationUser> _userManager;
 
-    // Vi trenger UserManager her også for å hente profil-data
+    // UserManager for å hente profil-data
     public MemberController(UserManager<ApplicationUser> userManager)
     {
       _userManager = userManager;
@@ -22,7 +22,7 @@ namespace BandApp.Controllers
       return View();
     }
 
-    // Endret til async for å kunne hente brukeren fra databasen
+    // async for å kunne hente brukeren fra databasen
     public async Task<IActionResult> Profile()
     {
       var user = await _userManager.GetUserAsync(User);
