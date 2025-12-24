@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using BandApp.Models;
 using BandApp.ViewModels;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace BandApp.Controllers
 {
@@ -10,11 +12,16 @@ namespace BandApp.Controllers
   {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public AccountController(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        IWebHostEnvironment webHostEnvironment)
     {
       _userManager = userManager;
       _signInManager = signInManager;
+      _webHostEnvironment = webHostEnvironment;
     }
 
     [HttpGet]
@@ -71,6 +78,46 @@ namespace BandApp.Controllers
     {
       await _signInManager.SignOutAsync();
       return RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateProfile(IFormFile imageFile)
+    {
+      var user = await _userManager.GetUserAsync(User);
+      if (user == null || imageFile == null || imageFile.Length == 0) return RedirectToAction("Profile", "Member");
+
+      string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img", "profiles");
+      if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+      // --- 1. SLETT GAMMELT BILDE HVIS DET EKSISTERER ---
+      if (!string.IsNullOrEmpty(user.ProfilePicture))
+      {
+        string oldFilePath = Path.Combine(uploadsFolder, user.ProfilePicture);
+        if (System.IO.File.Exists(oldFilePath))
+        {
+          System.IO.File.Delete(oldFilePath);
+        }
+      }
+
+      // --- 2. BEHANDLE OG LAGRE NYTT BILDE ---
+      string uniqueFileName = Guid.NewGuid().ToString() + ".jpg";
+      string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+      using (var image = await Image.LoadAsync(imageFile.OpenReadStream()))
+      {
+        image.Mutate(x => x.Resize(new ResizeOptions
+        {
+          Size = new Size(300, 300),
+          Mode = ResizeMode.Crop
+        }));
+        await image.SaveAsJpegAsync(filePath);
+      }
+
+      // --- 3. OPPDATER DATABASE ---
+      user.ProfilePicture = uniqueFileName;
+      await _userManager.UpdateAsync(user);
+
+      return RedirectToAction("Profile", "Member");
     }
   }
 }

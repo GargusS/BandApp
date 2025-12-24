@@ -1,16 +1,27 @@
+@using Microsoft.AspNetCore.Identity
+@using BandApp.Models
+@inject UserManager<ApplicationUser> UserManager
+
 @{
   ViewData["Title"] = "Velkommen til backstage";
+  var user = await UserManager.GetUserAsync(User);
+  var displayName = user?.DisplayName ?? "Musiker";
 }
 
 <section class="text-center py-16 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
-  <h1 class="text-5xl font-extrabold mb-6 tracking-tight">Velkommen til <span class="text-indigo-400">BACKSTAGE</span>
+  <h1 class="text-5xl font-extrabold mb-6 tracking-tight">
+    Velkommen <span class="text-indigo-400">@displayName</span> ! Du er nå BACKSTAGE !
   </h1>
+
   <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
-    Dette er et område som beviser at din innlogging er korrekt utført og at du har kommet deg inn bakstage!
-  </p>
-  <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
-    Du ser nå at det står logg ut oppe i høyre hjørne :)
+    Dette er et område som beviser at din innlogging er korrekt utført og at du har kommet deg inn backstage!
   </p>
 
+  <div class="relative z-10 mt-10">
+    <a asp-action="Profile" asp-controller="Member"
+      class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+      Gå til din profil
+    </a>
+  </div>
 
 </section>

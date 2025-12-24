@@ -1,20 +1,32 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using BandApp.Models;
+using System.Threading.Tasks;
 
 namespace BandApp.Controllers
 {
-  [Authorize] // <--- Denne linjen gjør at siden vises kun for medlemmer
+  [Authorize]
   public class MemberController : Controller
   {
-    // Alle actions (metoder) i denne kontrolleren krever innlogging
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    // Vi trenger UserManager her også for å hente profil-data
+    public MemberController(UserManager<ApplicationUser> userManager)
+    {
+      _userManager = userManager;
+    }
+
     public IActionResult Index()
     {
       return View();
     }
 
-    public IActionResult Profile()
+    // Endret til async for å kunne hente brukeren fra databasen
+    public async Task<IActionResult> Profile()
     {
-      return View();
+      var user = await _userManager.GetUserAsync(User);
+      return View(user); // Sender bruker-objektet (med DisplayName og ProfilePicture) til visningen
     }
   }
 }
