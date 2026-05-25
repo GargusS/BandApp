@@ -9,6 +9,10 @@ namespace BandApp.Data
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<ChatMessage> ChatMessages { get; set; } = null!;
-    // Andre DbSet (Posts, Threads...) senere
+
+    // Her registreres de nye tabellene:
+    public DbSet<Band> Bands { get; set; } = null!;
+    public DbSet<BandMember> BandMembers { get; set; } = null!;
+    public DbSet<ChatTopic> ChatTopics { get; set; } = null!;
   }
 }
