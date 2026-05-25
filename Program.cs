@@ -24,7 +24,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
 })
+.AddRoles<IdentityRole>() // <-- DENNE LINJEN AKTIVERER ROLLER/GOD MODE
 .AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -40,12 +42,40 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         context.Database.Migrate(); // Dette lager tabellene automatisk
+
+        // --- GOD MODE AKTIVERING ---
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+
+        // 1. Sjekk om rollen "Admin" finnes. Hvis ikke, opprett den.
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+
+        // 2. HENT E-POSTADRESSEN TRYGT FRA APPSETTINGS.JSON
+        var configuration = services.GetRequiredService<IConfiguration>();
+        var adminEmail = configuration["AdminSettings:AdminEmail"];
+
+        // 3. Hvis vi fant en e-post, leter vi etter brukeren og gir deg "God Mode"
+        if (!string.IsNullOrEmpty(adminEmail))
+        {
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser != null && !await userManager.IsInRoleAsync(adminUser, "Admin"))
+            {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+                Console.WriteLine($"Suksess: {adminUser.Email} har nå fått GOD MODE (Admin)!");
+            }
+        }
+        // ----------------------------
     }
     catch (Exception ex)
     {
-        Console.WriteLine("Migrering feilet: " + ex.Message);
+        Console.WriteLine("Migrering eller seeding feilet: " + ex.Message);
     }
 }
+
+
 
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
