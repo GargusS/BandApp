@@ -13,7 +13,7 @@ namespace BandApp.Controllers
     // Vi lager en intern merkelapp for databasen vår
     private readonly ApplicationDbContext _context;
 
-    // Dette er den riktige konstruktøren for å ta imot databasetilgangen
+    // Konstruktøren for å ta imot databasetilgangen
     public BandController(ApplicationDbContext context)
     {
       _context = context;
