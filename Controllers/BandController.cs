@@ -1,20 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using BandApp.Data;
 using BandApp.Models;
+using System.Linq;
 
 namespace BandApp.Controllers
 {
+  // Denne gjør at KUN innloggede brukere slipper inn på denne kontrolleren
+  [Authorize]
   public class BandController : Controller
   {
+    // Vi lager en intern merkelapp for databasen vår
+    private readonly ApplicationDbContext _context;
+
+    // Dette er den riktige konstruktøren for å ta imot databasetilgangen
+    public BandController(ApplicationDbContext context)
+    {
+      _context = context;
+    }
+
     public IActionResult Index()
     {
-      var members = new List<BandMember>
-            {
-                new BandMember { Id = 1, Name = "Argus", Role = "Gitar & vokal", ImageUrl = "/img/argus.jpg" },
-                new BandMember { Id = 2, Name = "Toke", Role = "Trommer", ImageUrl = "/img/argus.jpg" },
-                new BandMember { Id = 3, Name = "Vegar", Role = "Bass", ImageUrl = "/img/argus.jpg" },
-                new BandMember { Id = 4, Name = "Tom-H", Role = "Vokal", ImageUrl = "/img/argus.jpg" }
-            };
-      return View(members);
+      return View();
     }
   }
 }
